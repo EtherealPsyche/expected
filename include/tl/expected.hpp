@@ -2013,6 +2013,13 @@ public:
   constexpr explicit operator bool() const noexcept { return this->m_has_val; }
 
   template <class U = T,
+            detail::enable_if_t<std::is_void<U>::value> * = nullptr>
+  TL_EXPECTED_11_CONSTEXPR void value() const {
+    if (!has_value())
+      TL_EXPECTED_THROW_EXCEPTION(bad_expected_access<E>(err().value()));
+  }
+
+  template <class U = T,
             detail::enable_if_t<!std::is_void<U>::value> * = nullptr>
   TL_EXPECTED_11_CONSTEXPR const U &value() const & {
     if (!has_value())
